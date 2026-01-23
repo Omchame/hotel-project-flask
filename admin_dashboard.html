@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Hotel | Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+        :root {
+            --sidebar-width: 260px;
+            --bg-darker: #08090b;
+            --bg-panel: #111419;
+            --accent: #ffc107;
+            --text-primary: #ffffff;
+            --text-secondary: #ffc107;
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            background-color: var(--bg-darker);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            background: var(--bg-panel);
+            border-right: 2px solid var(--border-color);
+            padding: 1.5rem;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            color: #ced4da;
+            font-weight: 700;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .nav-link.active {
+            background: var(--accent);
+            color: #000 !important;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2.5rem;
+        }
+
+        /* --- STAT CARDS --- */
+        .glass-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .label-text {
+            color: var(--text-secondary);
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        /* --- TABLE STYLING --- */
+        .table-wrapper {
+            background: var(--bg-panel) !important;
+            border-radius: 20px;
+            border: 2px solid var(--accent);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .table {
+            background-color: var(--bg-panel) !important;
+            color: #ffffff !important;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #1c1f26 !important;
+            color: var(--accent) !important;
+            font-weight: 800;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1.2rem;
+        }
+
+        .table tbody td {
+            background-color: var(--bg-panel) !important;
+            color: #ffffff !important;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.2rem;
+            vertical-align: middle;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .search-box {
+            background: #000 !important;
+            border: 2px solid var(--accent) !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-5 px-2">
+            <div class="bg-warning text-dark rounded-3 p-2 me-2"><i class="fas fa-crown"></i></div>
+            <h5 class="mb-0 fw-bold text-white">GRAND <span class="text-warning">HOTEL</span></h5>
+        </div>
+        <a href="/admin/dashboard" class="nav-link active"><i class="fas fa-th-large me-2"></i> DASHBOARD</a>
+        <a href="/admin/settings" class="nav-link"><i class="fas fa-user-cog me-2"></i> SETTINGS</a>
+        <div style="margin-top: auto; position: absolute; bottom: 30px; width: 80%;">
+            <a href="/admin/logout" class="nav-link text-danger"><i class="fas fa-sign-out-alt me-2"></i> LOGOUT</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-800">REVENUE MONITOR</h2>
+                <p class="text-warning fw-bold mb-0">Live Database Connection: Active</p>
+            </div>
+            <div class="col-md-4">
+                <form action="/admin/dashboard" method="GET">
+                    <div class="input-group">
+                        <span class="input-group-text bg-black border-warning text-warning"><i class="fas fa-search"></i></span>
+                        <input type="text" name="search" class="form-control search-box" placeholder="SEARCH GUEST NAME..." value="{{ search_val }}">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-2">
+            <div class="col-md-6">
+                <div class="glass-card">
+                    <p class="label-text mb-1">Total Revenue Collected</p>
+                    <h2 class="display-5 fw-bold text-white">₹{{ "{:,.2f}".format(revenue) }}</h2>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="glass-card">
+                    <p class="label-text mb-1">Total Bookings Recorded</p>
+                    <h2 class="display-5 fw-bold text-white">{{ total_all }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-wrapper shadow-lg">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>BOOKING ID</th>
+                        <th>GUEST NAME</th>
+                        <th>ROOM TYPE</th>
+                        <th>TOTAL AMOUNT</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if bookings %}
+                        {% for b in bookings %}
+                        <tr>
+                            <td class="text-warning fw-bold">#{{ b.booking_id }}</td>
+                            <td class="fw-bold text-white">{{ b.customer_name }}</td>
+                            <td><span class="badge border border-light text-light">{{ b.room_type }}</span></td>
+                            <td class="fw-bold text-white">₹{{ "{:,.2f}".format(b.total_amount if b.total_amount else 0) }}</td>
+                            <td>
+                                {% if b.status == 'booked' %}
+                                    <span class="badge-status bg-success text-white">Booked</span>
+                                {% elif b.status == 'canceled' %}
+                                    <span class="badge-status bg-danger text-white">Canceled</span>
+                                {% else %}
+                                    <span class="badge-status bg-secondary text-white">{{ b.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="fas fa-user-slash fa-4x text-muted mb-3"></i>
+                                    <h3 class="text-white fw-bold">No Guest Found</h3>
+                                    <p class="text-warning">No records match the name: <strong>"{{ search_val }}"</strong></p>
+                                    <a href="/admin/dashboard" class="btn btn-warning fw-bold mt-3 px-4">
+                                        <i class="fas fa-undo me-2"></i>Show All Guests
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

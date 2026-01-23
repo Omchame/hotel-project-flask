@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access | Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #121416;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .login-card {
+            background: #1c1f23;
+            border: 1px solid #343a40;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .admin-icon { color: #ffc107; margin-bottom: 20px; }
+        .form-control { background: #2b3035; border: 1px solid #495057; color: white; }
+        .form-control:focus { background: #2b3035; border-color: #ffc107; color: white; box-shadow: none; }
+        .btn-admin { background: #ffc107; color: #000; font-weight: bold; border: none; transition: 0.3s; }
+        .btn-admin:hover { background: #e0a800; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="login-card shadow text-center">
+    <i class="fas fa-user-shield fa-4x admin-icon"></i>
+    <h3 class="fw-bold">Admin Portal</h3>
+    <p class="text-muted small">Authorized Personnel Only</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-danger py-2 small border-0">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/admin/login" method="POST" class="mt-4 text-start">
+        <div class="mb-3">
+            <label class="form-label small text-uppercase">Username</label>
+            <input type="text" name="username" class="form-control" placeholder="admin" required>
+        </div>
+        <div class="mb-4">
+            <label class="form-label small text-uppercase">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-admin py-2">Login to Control Panel</button>
+        </div>
+    </form>
+    
+    <div class="mt-4">
+        <a href="/login" class="text-muted text-decoration-none small"><i class="fas fa-arrow-left"></i> Customer Login</a>
+    </div>
+</div>
+
+</body>
+</html>

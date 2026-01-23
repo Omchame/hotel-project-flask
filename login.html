@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Same Background as Index Page */
+        .bg-image {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                              url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 10px rgba(78, 115, 223, 0.5);
+            transform: scale(1.02);
+        }
+
+        .btn-login {
+            background: #1cc88a; /* Professional Green */
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            background: #17a673;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(28, 200, 138, 0.4);
+        }
+
+        .register-link {
+            color: #f8f9fc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .register-link:hover {
+            color: #1cc88a;
+            text-decoration: underline;
+        }
+
+        .hotel-logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: rgba(220, 53, 69, 0.8);
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-image">
+    <div class="glass-card">
+        <div class="hotel-logo">
+            <i class="fas fa-key"></i> LOGIN
+        </div>
+        <p class="text-center mb-4 text-light-50 small">Enter your credentials to access dashboard</p>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger py-2 text-center mb-3">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/login" method="POST">
+            <div class="mb-3">
+                <label class="small mb-1"><i class="fas fa-id-badge me-2"></i>Customer ID</label>
+                <input type="text" name="customer_id" class="form-control" placeholder="Enter ID (e.g. 1)" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="small mb-1"><i class="fas fa-lock me-2"></i>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-login shadow-sm">Login to Account</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0 small">Don't have an account? <a href="/register" class="register-link fw-bold">Sign Up Now</a></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --sidebar-bg: #1a1c2e;
+            --gold-accent: #d4af37;
+            --primary-blue: #4e73df;
+            --light-bg: #f4f7f6;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            transition: all 0.3s;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 15px 25px;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.05);
+            color: var(--gold-accent);
+            border-left-color: var(--gold-accent);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            transition: all 0.3s;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* Room Cards */
+        .room-card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: 0.4s;
+            height: 100%;
+        }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+
+        /* VIP Card Specialty */
+        .vip-card {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .room-img-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .room-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .price-badge {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: var(--sidebar-bg);
+            color: var(--gold-accent);
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .btn-book {
+            background: var(--sidebar-bg);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            width: 100%;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-book-vip {
+            background: linear-gradient(45deg, #1a1c2e, #2a2d45);
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+        }
+
+        .btn-book:hover {
+            background: var(--gold-accent);
+            color: #000;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin: 40px 0 30px 0;
+        }
+
+        .section-divider hr {
+            flex-grow: 1;
+            opacity: 0.1;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 70px; }
+            .sidebar .nav-link span, .sidebar-header h4 { display: none; }
+            .main-content { margin-left: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h4 class="fw-bold"><i class="fas fa-hotel text-warning"></i> <span>GRAND HOTEL</span></h4>
+        </div>
+        <nav class="nav flex-column mt-4">
+            <a class="nav-link active" href="/dashboard"><i class="fas fa-th-large me-3"></i> <span>Dashboard</span></a>
+            <a class="nav-link" href="/my_bookings"><i class="fas fa-concierge-bell me-3"></i> <span>My Bookings</span></a>
+            <a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user-edit me-3"></i> <span>Profile</span></a>
+            <a class="nav-link mt-5 text-danger" href="/logout"><i class="fas fa-power-off me-3"></i> <span>Logout</span></a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="row align-items-center mb-5">
+            <div class="col">
+                <h2 class="fw-bold">Welcome back, <span class="text-primary">{{ name }}</span>!</h2>
+                <p class="text-muted">Explore our curated selection of luxury and comfort.</p>
+            </div>
+            <div class="col-auto">
+                <div class="bg-white p-2 px-3 rounded-pill shadow-sm border">
+                    <i class="far fa-calendar-alt text-primary me-2"></i>
+                    <span id="currentDate" class="small fw-bold"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-4 mb-3">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box" style="background: #eef2ff; color: #4e73df;">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-0">Customer ID</p>
+                            <h4 class="fw-bold mb-0">#{{ session['user_id'] }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-box" style="background: #ecfdf5; color: #10b981;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-0">Active Bookings</p>
+                            <h4 class="fw-bold mb-0">{{ active_bookings }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider">
+            <h4 class="fw-bold mb-0" style="color: var(--gold-accent);"><i class="fas fa-crown me-2"></i> VIP Royal Suites</h4>
+            <hr class="ms-4">
+        </div>
+
+        <div class="row mb-5">
+            {% for room in vip_rooms %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="room-card vip-card">
+                    <div class="room-img-container">
+                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80" alt="VIP Suite">
+                        <div class="price-badge">₹{{ room.price_per_night }}/night</div>
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-1">{{ room.room_type }}</h5>
+                        <p class="text-muted small mb-3">Suite #{{ room.room_id }} • Exclusive Floor</p>
+                        
+                        <div class="d-flex gap-3 mb-4 text-secondary small">
+                            <span><i class="fas fa-gem text-warning me-1"></i> Luxury</span>
+                            <span><i class="fas fa-wine-glass text-warning me-1"></i> Bar</span>
+                            <span><i class="fas fa-spa text-warning me-1"></i> Spa</span>
+                        </div>
+                        
+                        <a href="/book/{{ room.room_id }}" class="btn btn-book btn-book-vip">Book Luxury Suite</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% if not vip_rooms %}
+                <p class="text-muted ms-3 italic">No VIP suites currently available.</p>
+            {% endif %}
+        </div>
+
+        <div class="section-divider">
+            <h4 class="fw-bold mb-0"><i class="fas fa-bed me-2"></i> Standard Rooms</h4>
+            <hr class="ms-4">
+        </div>
+
+        <div class="row">
+            {% for room in general_rooms %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="room-card">
+                    <div class="room-img-container">
+                        <img src="https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&w=600&q=80" alt="Standard Room">
+                        <div class="price-badge">₹{{ room.price_per_night }}/night</div>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <h5 class="fw-bold mb-1">{{ room.room_type }}</h5>
+                        <p class="text-muted small mb-3">Room #{{ room.room_id }}</p>
+                        <a href="/book/{{ room.room_id }}" class="btn btn-book">Reserve Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% if not general_rooms and not vip_rooms %}
+            <div class="col-12 text-center py-5">
+                <div class="card bg-white border-0 shadow-sm p-5">
+                    <i class="fas fa-bed fa-3x text-light mb-3"></i>
+                    <h4>Everything is Booked!</h4>
+                    <p class="text-muted">Currently, all rooms are occupied. Please check back later.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        });
+    </script>
+</body>
+</html>

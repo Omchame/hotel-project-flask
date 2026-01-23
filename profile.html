@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+        }
+
+        .bg-overlay {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                              url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        /* Premium Back Button */
+        .btn-back-attractive {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-back-attractive:hover {
+            background: #d4af37;
+            color: #1a1c2e;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Profile Glass Card */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: 50px;
+            color: white;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 130px;
+            height: 130px;
+            background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 3.5rem;
+            color: #1a1c2e;
+            font-weight: 700;
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4);
+            border: 5px solid rgba(255,255,255,0.1);
+        }
+
+        .info-group {
+            text-align: left;
+            margin-bottom: 22px;
+        }
+
+        .info-label {
+            color: #d4af37;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: 5px;
+        }
+
+        .info-value {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .info-value:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .info-value i {
+            margin-right: 18px;
+            width: 20px;
+            text-align: center;
+            color: #d4af37;
+            font-size: 1.2rem;
+        }
+
+        .btn-edit-profile {
+            background: linear-gradient(45deg, #d4af37, #f1c40f);
+            color: #1a1c2e;
+            border: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 30px;
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit-profile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Success Alert Styling */
+        .alert-custom {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #fff;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-overlay">
+    <a href="{{ url_for('dashboard') }}" class="btn-back-attractive">
+        <i class="fas fa-arrow-left me-2"></i> Dashboard
+    </a>
+
+    <div class="profile-card">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-custom alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> {{ message }}
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="profile-avatar">
+            {{ user['name'][0] | upper if user['name'] else 'G' }}
+        </div>
+        
+        <h2 class="fw-bold mb-1">{{ user['name'] }}</h2>
+        <p class="text-warning small mb-5" style="letter-spacing: 3px;">ROYAL MEMBER</p>
+
+        <div class="row">
+            <div class="col-12 info-group">
+                <span class="info-label">Guest Name</span>
+                <div class="info-value">
+                    <i class="fas fa-user-circle"></i> {{ user['name'] }}
+                </div>
+            </div>
+
+            <div class="col-12 info-group">
+                <span class="info-label">Primary Email</span>
+                <div class="info-value">
+                    <i class="fas fa-envelope"></i> {{ user['email'] }}
+                </div>
+            </div>
+
+            <div class="col-md-7 info-group">
+                <span class="info-label">Phone Number</span>
+                <div class="info-value">
+                    <i class="fas fa-phone"></i> {{ user['contact'] }}
+                </div>
+            </div>
+
+            <div class="col-md-5 info-group">
+                <span class="info-label">Total Stays</span>
+                <div class="info-value">
+                    <i class="fas fa-key"></i> {{ total_stays }}
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ url_for('edit_profile') }}" style="text-decoration: none;">
+            <button class="btn btn-edit-profile">
+                Update Profile <i class="fas fa-chevron-right ms-2"></i>
+            </button>
+        </a>
+
+        <p class="mt-4 small text-light opacity-50">
+            Account ID: #00{{ session['user_id'] }} • Grand Hotel Security
+        </p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

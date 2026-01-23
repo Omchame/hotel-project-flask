@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Receipt | Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+        }
+
+        .bg-overlay {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), 
+                              url('https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .receipt-card {
+            background: rgba(20, 20, 20, 0.95); /* Darker, more solid background for visibility */
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            color: white;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .receipt-header {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .receipt-header i { font-size: 2.5rem; color: #d4af37; margin-bottom: 10px; }
+
+        .receipt-body { padding: 40px; }
+
+        /* Strong Gold Labels for visibility */
+        .label-gold {
+            color: #d4af37 !important;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+
+        /* Fixed Table Design */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin: 20px 0;
+        }
+
+        .table-custom td {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            color: #ffffff !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Rounding the corners of the rows */
+        .table-custom td:first-child { border-left: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px 0 0 15px; }
+        .table-custom td:last-child { border-right: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 15px 15px 0; }
+
+        .total-section {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+            padding: 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            border: 1px solid #d4af37;
+        }
+
+        .total-amount { font-size: 2rem; font-weight: 700; color: #d4af37; }
+
+        .btn-action {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            transition: 0.4s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            border: none;
+        }
+
+        .btn-print { border: 1px solid #d4af37; color: #d4af37; background: transparent; margin-right: 10px; }
+        .btn-print:hover { background: #d4af37; color: #000; }
+
+        .btn-dashboard { background: #d4af37; color: #000; }
+        .btn-dashboard:hover { background: #ffffff; transform: translateY(-3px); }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+            .receipt-card { background: white; color: black; box-shadow: none; border: 1px solid #000; }
+            .label-gold, .total-amount { color: black !important; }
+            .table-custom td { color: black !important; background: transparent; border: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-overlay">
+    <div class="receipt-card">
+        <div class="receipt-header">
+            <i class="fas fa-check-circle"></i>
+            <h3 class="fw-bold mb-0">Booking Confirmed</h3>
+            <p class="text-white-50 mt-1 mb-0">Grand Hotel Management System</p>
+        </div>
+
+        <div class="receipt-body">
+            <div class="row mb-2">
+                <div class="col-6">
+                    <span class="label-gold">Receipt No</span>
+                    <div class="info-value">#BKID-{{ b.booking_id }}</div>
+                </div>
+                <div class="col-6 text-end">
+                    <span class="label-gold">Guest Name</span>
+                    <div class="info-value">{{ session['user_name'] }}</div>
+                </div>
+            </div>
+
+            <table class="table-custom">
+                <tr>
+                    <td>
+                        <span class="label-gold">Room Type</span>
+                        <h5 class="mb-0 fw-bold">{{ b.room_type }}</h5>
+                        <small class="opacity-75">{{ nights }} Nights Stay</small>
+                    </td>
+                    <td class="text-end">
+                        <span class="label-gold">Rate</span>
+                        <h5 class="mb-0 fw-bold">₹{{ b.price_per_night }}</h5>
+                        <small class="opacity-75">per night</small>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="label-gold">Check-In</span>
+                        <div class="fw-bold">{{ b.checkin_date }}</div>
+                    </td>
+                    <td class="text-end">
+                        <span class="label-gold">Check-Out</span>
+                        <div class="fw-bold">{{ b.checkout_date }}</div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="total-section">
+                <div>
+                    <span class="label-gold mb-0">Total Amount</span>
+                    <p class="mb-0 small opacity-75">Payment Received</p>
+                </div>
+                <div class="total-amount">₹{{ total }}</div>
+            </div>
+
+            <div class="text-center mt-5 no-print">
+                <button onclick="window.print()" class="btn-action btn-print">
+                    <i class="fas fa-print me-2"></i> Print
+                </button>
+                <a href="{{ url_for('dashboard') }}" class="btn-action btn-dashboard">
+                    Go to Dashboard <i class="fas fa-home ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

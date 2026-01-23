@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Hotel | Luxury Redefined</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
+
+        :root {
+            --gold: #ffc107;
+            --dark-bg: #0a0c10;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--dark-bg); 
+            color: white; 
+            margin: 0; 
+            overflow: hidden; /* Keeps the hero clean */
+        }
+
+        /* Full Screen Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero h1 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 5rem; 
+            color: var(--gold); 
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+        
+        .hero p { 
+            font-size: 1.2rem; 
+            color: #cbd5e0; 
+            max-width: 600px; 
+            margin-bottom: 40px; 
+        }
+
+        .btn-group-custom { display: flex; gap: 20px; }
+
+        .btn-main {
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-guest { background: var(--gold); color: black; border: 2px solid var(--gold); }
+        .btn-guest:hover { background: transparent; color: var(--gold); transform: scale(1.05); }
+
+        .btn-outline { border: 2px solid white; color: white; }
+        .btn-outline:hover { background: white; color: black; transform: scale(1.05); }
+
+        /* --- Floating Admin Button (Corner) --- */
+        .admin-fab {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .admin-fab:hover {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+            transform: translateY(2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .staff-text {
+            position: absolute;
+            right: 60px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .admin-fab:hover .staff-text {
+            opacity: 1;
+            right: 70px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <a href="/admin/login" class="admin-fab">
+        <span class="staff-text">Staff Login</span>
+        <i class="fas fa-user-shield"></i>
+    </a>
+
+    <div class="hero">
+        <i class="fas fa-hotel fa-4x text-warning mb-4"></i>
+        <h1>GRAND HOTEL</h1>
+        <p>Experience the ultimate blend of luxury, comfort, and world-class service. Your royal stay awaits.</p>
+        
+        <div class="btn-group-custom">
+            <a href="/register" class="btn-main btn-guest">Book Now</a>
+            <a href="/login" class="btn-main btn-outline">Guest Login</a>
+        </div>
+    </div>
+
+</body>
+</html>

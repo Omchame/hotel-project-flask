@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Grand Hotel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Background Image with Overlay */
+        .bg-image {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                              url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .btn-register {
+            background: #4e73df;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .btn-register:hover {
+            background: #224abe;
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            color: #f8f9fc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .login-link:hover {
+            color: #4e73df;
+            text-decoration: underline;
+        }
+
+        .hotel-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-image">
+    <div class="glass-card">
+        <div class="hotel-logo">
+            <i class="fas fa-hotel"></i> GRAND HOTEL
+        </div>
+        <p class="text-center mb-4 text-light">Experience Luxury Like Never Before</p>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-info py-2 small">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/register" method="POST">
+            <div class="mb-3">
+                <label class="small mb-1">Full Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-3">
+                <label class="small mb-1">Contact Number</label>
+                <input type="text" name="contact" class="form-control" placeholder="e.g. 9876543210" required>
+            </div>
+            <div class="mb-3">
+                <label class="small mb-1">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="name@example.com" required>
+            </div>
+            <div class="mb-3">
+                <label class="small mb-1">Create Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Create a strong password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-register mt-2">Create Account</button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-0">Already a member? <a href="/login" class="login-link fw-bold">Login Here</a></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
