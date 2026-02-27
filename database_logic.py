@@ -6,7 +6,7 @@ conn = mysql.connector.connect(
     host="localhost",
     port="3308",
     user="root",
-    password="cocsit",
+    password="DATABASE_PASSWORD_HERE",
     database="hotel"
 )
 cursor = conn.cursor()
@@ -270,5 +270,6 @@ def main():
 
     cursor.close()
     conn.close()
+
 
 
