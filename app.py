@@ -1,18 +1,29 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for
 import mysql.connector
+import os
 from datetime import date
 
 app = Flask(__name__)
 app.secret_key = 'hotel_secret_key'
 
-# ========== Database Connection ==========
+# ========== Smart Database Connection ==========
 def get_db_connection():
+    
+    db_host = os.environ.get('DB_HOST', 'localhost')
+    db_user = os.environ.get('DB_USER', 'root')
+    db_password = os.environ.get('DB_PASSWORD', 'DATABASE_PASSWORD_HERE') # Change locally if needed
+    db_name = os.environ.get('DB_NAME', 'hotel')
+    db_port = os.environ.get('DB_PORT', '3308')
+    
+    use_ssl = True if db_host != 'localhost' else False
+
     return mysql.connector.connect(
-        host="localhost",
-        port="3308",
-        user="root",
-        password="DATABASE_PASSWORD_HERE",
-        database="hotel"
+        host=db_host,
+        user=db_user,
+        password=db_password,
+        database=db_name,
+        port=db_port,
+        ssl_disabled=not use_ssl
     )
 
 # ========== 1. Registration & Home ==========
@@ -20,11 +31,9 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
-# Replace your 'handle_register' and the old 'register' route with this:
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # This part runs when you click the "Create Account" button
         name = request.form.get('name')
         contact = request.form.get('contact')
         email = request.form.get('email')
@@ -42,10 +51,8 @@ def register():
             return redirect(url_for('login'))
         except Exception as e:
             flash(f"Error: {str(e)}")
-            # If it fails, stay on the register page to show the error
             return redirect(url_for('register'))
     
-    # This part runs when you just click the "Sign Up" link from the Login page
     return render_template('register.html')
 
 # ========== 2. Login ==========
@@ -84,12 +91,10 @@ def dashboard():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        # 1. COUNT ACTIVE BOOKINGS
         cursor.execute("SELECT COUNT(*) as active_count FROM bookings WHERE customer_id = %s AND status = 'booked'", (session['user_id'],))
         active_data = cursor.fetchone()
         active_count = active_data['active_count'] if active_data else 0
 
-        # 2. AUTO-CLEANUP
         today = date.today()
         cleanup_query = """
             UPDATE rooms r
@@ -100,7 +105,6 @@ def dashboard():
         cursor.execute(cleanup_query, (today,))
         conn.commit()
         
-        # 3. FETCH ROOMS
         cursor.execute("SELECT * FROM rooms WHERE is_available = 1 AND room_type = 'VIP'")
         vip_rooms = cursor.fetchall()
 
@@ -247,7 +251,6 @@ def admin_login():
         try:
             conn = get_db_connection()
             cursor = conn.cursor(dictionary=True)
-            # FIX: Check the database instead of hardcoded 'hotel123'
             cursor.execute("SELECT * FROM admins WHERE username = %s AND password = %s", (username, password))
             admin = cursor.fetchone()
             cursor.close()
@@ -260,7 +263,7 @@ def admin_login():
             else:
                 flash("Invalid Admin Credentials")
         except Exception as e:
-            flash(f"Database Error: {str(e)}. Make sure the 'admins' table exists!")
+            flash(f"Database Error: {str(e)}")
             
     return render_template('admin_login.html')
 
@@ -300,14 +303,12 @@ def admin_dashboard():
     except Exception as e:
         return f"Admin Error: {str(e)}"
 
-# Route to view the separate Settings Page
 @app.route('/admin/settings')
 def admin_settings():
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin_login'))
     return render_template('admin_settings.html')
 
-# Route to process the change (stays the same but redirects to login on success)
 @app.route('/admin/update_account', methods=['POST'])
 def admin_update_account():
     if not session.get('admin_logged_in'):
@@ -325,16 +326,15 @@ def admin_update_account():
         cursor.close()
         conn.close()
         
-        session.clear() # Security best practice: force re-login
+        session.clear() 
         flash("Credentials updated! Please login with your new details.")
         return redirect(url_for('admin_login'))
     except Exception as e:
         flash(f"Error: {str(e)}")
         return redirect(url_for('admin_settings'))
-# ========== UPDATED: Admin Price Update with Confirmation Feedback ==========
+
 @app.route('/admin/update_price', methods=['POST'])
 def update_price():
-    # Only allow if admin session is active
     if not session.get('admin_logged_in'):
         flash("Unauthorized access. Please login as Admin.")
         return redirect(url_for('admin_login'))
@@ -345,19 +345,13 @@ def update_price():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
-        # SQL to update the price for all rooms of that type
         cursor.execute("UPDATE rooms SET price_per_night = %s WHERE room_type = %s", 
                        (new_price, room_type))
         conn.commit()
-        
         cursor.close()
         conn.close()
-        
-        # Success feedback
         flash(f"SUCCESS: {room_type} room prices updated to ₹{new_price} successfully!")
         return redirect(url_for('admin_dashboard'))
-        
     except Exception as e:
         flash(f"ERROR: {str(e)}")
         return redirect(url_for('admin_dashboard'))
@@ -376,11 +370,9 @@ def profile():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        # Fetch user details
         cursor.execute("SELECT name, email, contact FROM customers WHERE id = %s", (session['user_id'],))
         user_info = cursor.fetchone()
         
-        # Count total successful stays
         cursor.execute("SELECT COUNT(*) as total FROM bookings WHERE customer_id = %s AND status != 'canceled'", (session['user_id'],))
         stats = cursor.fetchone()
         
@@ -395,32 +387,34 @@ def edit_profile():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
     if request.method == 'POST':
         new_name = request.form.get('name')
         new_email = request.form.get('email')
         new_contact = request.form.get('contact')
         try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
             query = "UPDATE customers SET name = %s, email = %s, contact = %s WHERE id = %s"
             cursor.execute(query, (new_name, new_email, new_contact, session['user_id']))
             conn.commit()
-            session['user_name'] = new_name # Update session name too
+            session['user_name'] = new_name 
             flash("Profile updated successfully!")
+            cursor.close()
+            conn.close()
             return redirect(url_for('profile'))
         except Exception as e:
             flash(f"Update failed: {str(e)}")
-        finally:
-            cursor.close()
-            conn.close()
 
-    # GET method: show current info
+    # GET method
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT name, email, contact FROM customers WHERE id = %s", (session['user_id'],))
     user_info = cursor.fetchone()
     cursor.close()
     conn.close()
     return render_template('edit_profile.html', user=user_info)
-if __name__ == "__main__":
 
-    app.run(debug=True)
+if __name__ == "__main__":
+    # Use port from environment (Render needs this)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
