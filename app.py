@@ -11,7 +11,7 @@ def get_db_connection():
         host="localhost",
         port="3308",
         user="root",
-        password="cocsit",
+        password="DATABASE_PASSWORD_HERE",
         database="hotel"
     )
 
@@ -422,4 +422,5 @@ def edit_profile():
     conn.close()
     return render_template('edit_profile.html', user=user_info)
 if __name__ == "__main__":
+
     app.run(debug=True)
